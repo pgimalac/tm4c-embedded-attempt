@@ -1,9 +1,4 @@
-// main.c
-// Toggles the Red LED of TM4C Launchpad when SW1(PF4) is pushed and held
-// PF4 is negative logic,i.e 0 is on and non-zero is off
 #include "gpio.h"
-
-unsigned long Led;
 
 void Delay(void) {
     unsigned long volatile time;
@@ -16,23 +11,14 @@ void Delay(void) {
 int main(void) {
     PortF_Init();
     while (1) {
-        // if(PF4 == 0x0){
-        Led = 0x02; // reverse value of LED
-        GPIO_PORTF_DATA_R =
-            Led; // write value to PORTF DATA register,toggle led
+        GPIO_PORTF_DATA_R = 0x04;
         Delay();
-        Led = 0x04; // reverse value of LED
-        GPIO_PORTF_DATA_R =
-            Led; // write value to PORTF DATA register,toggle led
+        if(PF4 == 0x0){
+            GPIO_PORTF_DATA_R = 0x08;
+        } else {
+            GPIO_PORTF_DATA_R = 0x02;
+        }
         Delay();
-        Led = 0x08; // reverse value of LED
-        GPIO_PORTF_DATA_R =
-            Led; // write value to PORTF DATA register,toggle led
-        Delay();
-        /*Led = 0x0A;            // reverse value of LED
-        GPIO_PORTF_DATA_R = Led;   // write value to PORTF DATA register,toggle
-        led Delay();*/
-        // }
     }
 }
 
