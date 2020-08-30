@@ -20,7 +20,7 @@ I followed the course from the [edX website](https://www.edx.org/course/embedded
 - [x] lab 4
 - [ ] lab 5 (I'm programming on the real board so this lab has no real interest for me)
 - [x] lab 6
-- [ ] lab 7
+- [x] lab 7
 - [ ] lab 8
 - [ ] lab 9
 - [ ] lab 10
