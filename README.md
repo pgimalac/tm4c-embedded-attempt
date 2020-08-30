@@ -15,5 +15,7 @@ I tried to use CCStudio but without success.
 ### edX
 I followed the course from the [edX website](https://www.edx.org/course/embedded-systems-shape-the-world-microcontroller-i).
 
-### Lab n°6
-The objective of this lab is to write a program such as the led is turned on at first, then there is a 100ms delay and if the switch 1 is pressed then the led is turned off and on, else the led is just turned on.
+### Lab n°7
+See the description on the [edX website](https://courses.edx.org/courses/course-v1:UTAustinX+UT.6.10x+3T2019/course/#block-v1:UTAustinX+UT.6.10x+3T2019+type@sequential+block@a0b6a553738a4ade8cea678a64266d6e).
+
+The idea is to simulate a pacemaker.
