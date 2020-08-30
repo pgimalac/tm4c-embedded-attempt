@@ -1,26 +1,88 @@
 #include "gpio.h"
 
-void delay(void) {
-    unsigned long volatile time;
-    time = 100000;
-    while (time) {
-        time--;
+#define AS PF4
+#define Ready PF3
+#define VT PF1
+
+// Subroutine reads AS input and waits for signal to be low
+// If AS is already low, it returns right away
+// If AS is currently high, it will wait until it to go low
+// Inputs:  None
+// Outputs: None
+void WaitForASLow(void){
+    while (AS != 0);
+}
+
+// Subroutine reads AS input and waits for signal to be high
+// If AS is already high, it returns right away
+// If AS is currently low, it will wait until it to go high
+// Inputs:  None
+// Outputs: None
+void WaitForASHigh(void){
+    while (AS == 0);
+}
+
+// Subroutine sets VT high
+// Inputs:  None
+// Outputs: None
+// Notes:   friendly means it does not affect other bits in the port
+void SetVT(void){
+    VT |= 0x2;
+}
+
+// Subroutine clears VT low
+// Inputs:  None
+// Outputs: None
+// Notes:   friendly means it does not affect other bits in the port
+void ClearVT(void){
+    VT &= ~0x2;
+}
+
+// Subroutine sets Ready high
+// Inputs:  None
+// Outputs: None
+// Notes:   friendly means it does not affect other bits in the port
+void SetReady(void){
+    Ready |= 0x8;
+}
+
+
+// Subroutine clears Ready low
+// Inputs:  None
+// Outputs: None
+// Notes:   friendly means it does not affect other bits in the port
+void ClearReady(void){
+    Ready &= ~0x8;
+}
+
+// Subroutine to delay in units of milliseconds
+// Inputs:  Number of milliseconds to delay
+// Outputs: None
+// Notes:   assumes 80 MHz clock
+void Delay1ms(unsigned long msec){
+    // PF2 = 0x4;
+    while (msec--) {
+        unsigned long time = 1000;
+        while (time) {
+            time--;
+        }
     }
+    // PF2 = 0x0;
 }
 
 int main(void) {
     PortF_Init();
-    PF2 = 4;
-    // GPIO_PORTF_DATA_R = 0x08;
+
     while (1) {
-        delay();
-        if(PF4 == 0x0){
-            PF2 = 0;
-            delay();
-            PF2 = 4;
-        } else {
-            PF2 = 4;
-        }
+        SetReady();
+        WaitForASLow();
+        ClearReady();
+        Delay1ms(10);
+        WaitForASHigh();
+        Delay1ms(250);
+        SetVT();
+        Delay1ms(250);
+        ClearVT();
     }
 }
 
