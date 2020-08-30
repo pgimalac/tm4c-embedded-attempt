@@ -14,3 +14,13 @@ I tried to use CCStudio but without success.
 
 ### edX
 I followed the course from the [edX website](https://www.edx.org/course/embedded-systems-shape-the-world-microcontroller-i).
+
+### Labs
+- [x] lab 2
+- [x] lab 4
+- [ ] lab 5 (I'm programming on the real board so this lab has no real interest for me)
+- [ ] lab 6
+- [ ] lab 7
+- [ ] lab 8
+- [ ] lab 9
+- [ ] lab 10
