@@ -14,3 +14,6 @@ I tried to use CCStudio but without success.
 
 ### edX
 I followed the course from the [edX website](https://www.edx.org/course/embedded-systems-shape-the-world-microcontroller-i).
+
+### Lab n°4
+The objective of this lab is to write a program such as the led is off when neither switch is pressed, red when only switch 1 is pressed, green when only switch 2 is pressed and blue when both are pressed.
