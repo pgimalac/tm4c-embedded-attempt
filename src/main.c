@@ -1,8 +1,8 @@
 #include "gpio.h"
 
-void Delay(void) {
+void delay(void) {
     unsigned long volatile time;
-    time = 800000;
+    time = 100000;
     while (time) {
         time--;
     }
@@ -10,21 +10,17 @@ void Delay(void) {
 
 int main(void) {
     PortF_Init();
+    PF2 = 4;
+    // GPIO_PORTF_DATA_R = 0x08;
     while (1) {
+        delay();
         if(PF4 == 0x0){
-            if (PF0 == 0x0) {
-                GPIO_PORTF_DATA_R = 0x04;
-            } else {
-                GPIO_PORTF_DATA_R = 0x02;
-            }
+            PF2 = 0;
+            delay();
+            PF2 = 4;
         } else {
-            if (PF0 == 0x0) {
-                GPIO_PORTF_DATA_R = 0x08;
-            } else {
-                GPIO_PORTF_DATA_R = 0x00;
-            }
+            PF2 = 4;
         }
-        // Delay();
     }
 }
 
