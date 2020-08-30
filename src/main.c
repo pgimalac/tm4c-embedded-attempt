@@ -11,14 +11,20 @@ void Delay(void) {
 int main(void) {
     PortF_Init();
     while (1) {
-        GPIO_PORTF_DATA_R = 0x04;
-        Delay();
         if(PF4 == 0x0){
-            GPIO_PORTF_DATA_R = 0x08;
+            if (PF0 == 0x0) {
+                GPIO_PORTF_DATA_R = 0x04;
+            } else {
+                GPIO_PORTF_DATA_R = 0x02;
+            }
         } else {
-            GPIO_PORTF_DATA_R = 0x02;
+            if (PF0 == 0x0) {
+                GPIO_PORTF_DATA_R = 0x08;
+            } else {
+                GPIO_PORTF_DATA_R = 0x00;
+            }
         }
-        Delay();
+        // Delay();
     }
 }
 
