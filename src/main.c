@@ -10,36 +10,37 @@ void Delay1ms(unsigned long msec){
     }
 }
 
-#define PA5   (*((volatile unsigned long *)0x40004080))
-void Switch_Init(void){
+void LED_Init(void){
     volatile unsigned long delay;
-    SYSCTL_RCGC2_R |= 0x00000001;     // 1) activate clock for Port A
+    SYSCTL_RCGC2_R |= 0x01;           // 1) activate clock for Port A
     delay = SYSCTL_RCGC2_R;           // allow time for clock to start
-                                      // 2) no need to unlock GPIO Port A
-    GPIO_PORTA_AMSEL_R &= ~0x20;      // 3) disable analog on PA5
-    GPIO_PORTA_PCTL_R &= ~0x00F00000; // 4) PCTL GPIO on PA5
-    GPIO_PORTA_DIR_R &= ~0x20;        // 5) direction PA5 input
-    GPIO_PORTA_AFSEL_R &= ~0x20;      // 6) PA5 regular port function
-    GPIO_PORTA_DEN_R |= 0x20;         // 7) enable PA5 digital port
+                                    // 2) no need to unlock PA2
+    GPIO_PORTA_PCTL_R &= ~0x00000F00; // 3) regular GPIO
+    GPIO_PORTA_AMSEL_R &= ~0x04;      // 4) disable analog function on PA2
+    GPIO_PORTA_DIR_R |= 0x04;         // 5) set direction to output
+    GPIO_PORTA_AFSEL_R &= ~0x04;      // 6) regular port function
+    GPIO_PORTA_DEN_R |= 0x04;         // 7) enable digital port
 }
 
-unsigned long Switch_Input(void){
-  return PA5; // return 0x20(pressed) or 0(not pressed)
+// Make PA2 high
+void LED_On(void){
+    GPIO_PORTA_DATA_R |= 0x04;
 }
 
-unsigned long Switch_Input2(void){
-  return (GPIO_PORTA_DATA_R&0x20); // 0x20(pressed) or 0(not pressed)
+// Make PA2 low
+void LED_Off(void){
+    GPIO_PORTA_DATA_R &= ~0x04;
 }
 
 int main(void) {
     PortF_Init();
-    Switch_Init();
+    LED_Init();
 
     while (1) {
-        if (Switch_Input()) {
-            PF2 = 0x4;
+        if (PF4 == 0) {
+            LED_On();
         } else {
-            PF2 = 0x0;
+            LED_Off();
         }
     }
 }
