@@ -1,88 +1,46 @@
 #include "gpio.h"
+#include "tm4c123gh6pm.h"
 
-#define AS PF4
-#define Ready PF3
-#define VT PF1
-
-// Subroutine reads AS input and waits for signal to be low
-// If AS is already low, it returns right away
-// If AS is currently high, it will wait until it to go low
-// Inputs:  None
-// Outputs: None
-void WaitForASLow(void){
-    while (AS != 0);
-}
-
-// Subroutine reads AS input and waits for signal to be high
-// If AS is already high, it returns right away
-// If AS is currently low, it will wait until it to go high
-// Inputs:  None
-// Outputs: None
-void WaitForASHigh(void){
-    while (AS == 0);
-}
-
-// Subroutine sets VT high
-// Inputs:  None
-// Outputs: None
-// Notes:   friendly means it does not affect other bits in the port
-void SetVT(void){
-    VT |= 0x2;
-}
-
-// Subroutine clears VT low
-// Inputs:  None
-// Outputs: None
-// Notes:   friendly means it does not affect other bits in the port
-void ClearVT(void){
-    VT &= ~0x2;
-}
-
-// Subroutine sets Ready high
-// Inputs:  None
-// Outputs: None
-// Notes:   friendly means it does not affect other bits in the port
-void SetReady(void){
-    Ready |= 0x8;
-}
-
-
-// Subroutine clears Ready low
-// Inputs:  None
-// Outputs: None
-// Notes:   friendly means it does not affect other bits in the port
-void ClearReady(void){
-    Ready &= ~0x8;
-}
-
-// Subroutine to delay in units of milliseconds
-// Inputs:  Number of milliseconds to delay
-// Outputs: None
-// Notes:   assumes 80 MHz clock
 void Delay1ms(unsigned long msec){
-    // PF2 = 0x4;
     while (msec--) {
         unsigned long time = 1000;
         while (time) {
             time--;
         }
     }
-    // PF2 = 0x0;
+}
+
+#define PA5   (*((volatile unsigned long *)0x40004080))
+void Switch_Init(void){
+    volatile unsigned long delay;
+    SYSCTL_RCGC2_R |= 0x00000001;     // 1) activate clock for Port A
+    delay = SYSCTL_RCGC2_R;           // allow time for clock to start
+                                      // 2) no need to unlock GPIO Port A
+    GPIO_PORTA_AMSEL_R &= ~0x20;      // 3) disable analog on PA5
+    GPIO_PORTA_PCTL_R &= ~0x00F00000; // 4) PCTL GPIO on PA5
+    GPIO_PORTA_DIR_R &= ~0x20;        // 5) direction PA5 input
+    GPIO_PORTA_AFSEL_R &= ~0x20;      // 6) PA5 regular port function
+    GPIO_PORTA_DEN_R |= 0x20;         // 7) enable PA5 digital port
+}
+
+unsigned long Switch_Input(void){
+  return PA5; // return 0x20(pressed) or 0(not pressed)
+}
+
+unsigned long Switch_Input2(void){
+  return (GPIO_PORTA_DATA_R&0x20); // 0x20(pressed) or 0(not pressed)
 }
 
 int main(void) {
     PortF_Init();
+    Switch_Init();
 
     while (1) {
-        SetReady();
-        WaitForASLow();
-        ClearReady();
-        Delay1ms(10);
-        WaitForASHigh();
-        Delay1ms(250);
-        SetVT();
-        Delay1ms(250);
-        ClearVT();
+        if (Switch_Input()) {
+            PF2 = 0x4;
+        } else {
+            PF2 = 0x0;
+        }
     }
 }
 
