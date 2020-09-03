@@ -1,7 +1,10 @@
 #include "gpio.h"
+#include "tm4c123gh6pm.h"
 
 void PortF_Init(void) {
+    volatile unsigned long delay;
     SYSCTL_RCGC2_R |= 0x00000020;   // 1) activate clock for Port F
+    delay = SYSCTL_RCGC2_R;           // allow time for clock to start
     GPIO_PORTF_LOCK_R = 0x4C4F434B; // 2) unlock GPIO Port F
     GPIO_PORTF_CR_R = 0x1F;         // allow changes to PF4-0
     GPIO_PORTF_AMSEL_R = 0x00;      // 3) disable analog on PF
