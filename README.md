@@ -21,6 +21,6 @@ I followed the course from the [edX website](https://www.edx.org/course/embedded
 - [ ] lab 5 (I'm programming on the real board so this lab has no real interest for me)
 - [x] lab 6
 - [x] lab 7
-- [ ] lab 8
+- [x] lab 8
 - [ ] lab 9
 - [ ] lab 10
