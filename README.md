@@ -13,7 +13,7 @@ A makefile is provided to build and flash the code onto the board.
 I tried to use CCStudio but without success.
 
 ### edX
-I followed the course from the [edX website](https://www.edx.org/course/embedded-systems-shape-the-world-microcontroller-i).
+I followed the course from the [edX website](https://www.edx.org/course/embedded-systems-shape-the-world-microcontroller-i) until lab 9.
 
 ### Labs
 - [x] lab 2
@@ -22,5 +22,5 @@ I followed the course from the [edX website](https://www.edx.org/course/embedded
 - [x] lab 6
 - [x] lab 7
 - [x] lab 8
-- [ ] lab 9
+- [x] lab 9
 - [ ] lab 10
