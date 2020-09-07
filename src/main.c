@@ -1,64 +1,41 @@
 #include "gpio.h"
 #include "tm4c123gh6pm.h"
 
-void Delay1ms(unsigned long msec){
-    while (msec--) {
-        unsigned long time = 1000;
-        while (time) {
-            time--;
-        }
-    }
+void SysTick_Init(void){
+    NVIC_ST_CTRL_R = 0;              // 1) disable SysTick during setup
+    NVIC_ST_RELOAD_R = 4000000;      // 2) maximum reload value
+    NVIC_ST_CURRENT_R = 0;           // 3) any write to current clears it
+    NVIC_ST_CTRL_R = 0x00000005;     // 4) enable SysTick with core clock
 }
 
-#define PE0   (*((volatile unsigned long *)0x40024004))
-void Switch_Init(void){ volatile unsigned long delay;
-    SYSCTL_RCGC2_R |= 0x00000010;
-    delay = SYSCTL_RCGC2_R;
-
-    GPIO_PORTE_AMSEL_R &= ~0x01;
-    GPIO_PORTE_PCTL_R &= ~0x0000000F;
-    GPIO_PORTE_DIR_R &= ~0x01;
-    GPIO_PORTE_AFSEL_R &= ~0x01;
-    GPIO_PORTE_DEN_R |= 0x01;
-}
-
-unsigned long Switch_Input(void){
-    return PE0;
-}
-
-#define PE1   (*((volatile unsigned long *)0x40024008))
-void LED_Init(void){
-    volatile unsigned long delay;
-    SYSCTL_RCGC2_R |= 0x10;
-    delay = SYSCTL_RCGC2_R;
-
-    GPIO_PORTE_PCTL_R &= ~0x000000F0;
-    GPIO_PORTE_AMSEL_R &= ~0x02;
-    GPIO_PORTE_DIR_R |= 0x02;
-    GPIO_PORTE_AFSEL_R &= ~0x02;
-    GPIO_PORTE_DEN_R |= 0x02;
-}
-
-void LED_On(void){
-    PE1 |= 0x02;
-}
-
-void LED_Off(void){
-    PE1 &= ~0x02;
-}
+unsigned long data[50];
+int data_size = 0;
 
 int main(void) {
     PortF_Init();
-    Switch_Init();
-    LED_Init();
+    SysTick_Init();
+
+    unsigned long last = PF0 | PF4;
 
     while (1) {
-        LED_On();
-        Delay1ms(100);
-        if (Switch_Input()) {
-            LED_Off();
+        unsigned long current = PF0 | PF4;
+
+        // PF2 = !!(current & 0x1)  << 2;
+        // PF3 = !!(current & 0x10) << 3;
+
+        if (data_size < 50 && last != current) {
+            last = current;
+            data[data_size++] = (current & 0x11) | PF1;
         }
-        Delay1ms(100);
+
+        if (PF0 == 0 || PF4 == 0) {
+            if (NVIC_ST_CTRL_R & 0x10000) {
+                PF1 ^= 0x2;
+            }
+        } else {
+            PF1 = 0;
+            NVIC_ST_CURRENT_R = 0;
+        }
     }
 }
 

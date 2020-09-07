@@ -15,5 +15,7 @@ I tried to use CCStudio but without success.
 ### edX
 I followed the course from the [edX website](https://www.edx.org/course/embedded-systems-shape-the-world-microcontroller-i).
 
-### Lab n°8
-Like Lab n°6 but the switch and led are on the protoboard. When the button is switched, the led toggles, otherwise it stays on.
+### Lab n°9
+The led flashes at a frequency of 10Hz if either SW1 or SW2 are pressed, otherwise it is off.
+
+Every time the input (SW1 or SW2) changes, add the values of PF4, PF1, PF0 in an array.
